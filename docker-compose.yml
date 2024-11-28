@@ -6,15 +6,15 @@ services:
     ports:
       - "5000:5000"
     environment:
-      DATABASE_URL: postgresql://postgres-user:postgres-user@localhost:5432/nodejs-prisma-redis-dockerize?schema=public
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
       - db
   db:
     image: postgres:latest
     container_name: posgress-dockerize
     environment:
-      POSTGRES_USER: postgres-user
-      POSTGRES_PASSWORD: postgres-password
-      POSTGRES_DB: nodejs-prisma-redis-dockerize
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - 5432:5432
