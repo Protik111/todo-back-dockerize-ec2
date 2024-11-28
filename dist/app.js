@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const config_1 = __importDefault(require("./config"));
 const app = (0, express_1.default)();
-const port = 5000;
 app.get("/", (req, res) => {
     res.send("Hello World");
 });
-app.listen(port, () => {
-    console.log(`Listening to ${port}`);
+app.listen(config_1.default.port, () => {
+    console.log(`Listening to ${config_1.default.port}`);
 });
