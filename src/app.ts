@@ -5,8 +5,11 @@ import routes from "./app/routes";
 import cookieParser from "cookie-parser";
 
 const app: Application = express();
+const corsOptions = {
+  origin: "*",
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 //parser
