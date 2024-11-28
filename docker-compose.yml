@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    container_name: express-app
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://postgres-user:postgres-user@localhost:5432/nodejs-prisma-redis-dockerize?schema=public
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    container_name: posgress-dockerize
+    environment:
+      POSTGRES_USER: postgres-user
+      POSTGRES_PASSWORD: postgres-password
+      POSTGRES_DB: nodejs-prisma-redis-dockerize
+    ports:
+      - 5432:5432
