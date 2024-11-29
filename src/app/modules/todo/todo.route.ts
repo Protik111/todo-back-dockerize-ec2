@@ -11,4 +11,6 @@ router.post(
   TodoController.createTodo
 );
 
+router.get("/", TodoController.getTodos);
+
 export const TodoRoutes = router;

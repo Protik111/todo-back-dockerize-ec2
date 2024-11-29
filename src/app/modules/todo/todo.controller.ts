@@ -15,6 +15,18 @@ const createTodo = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getTodos = catchAsync(async (req: Request, res: Response) => {
+  const result = await TodoService.getTodos();
+
+  sendResponse<ITodoResponse[] | null>(res, {
+    statusCode: 200,
+    success: true,
+    message: "Todo fetched successfully!",
+    data: result,
+  });
+});
+
 export const TodoController = {
   createTodo,
+  getTodos,
 };
