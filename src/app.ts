@@ -16,13 +16,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/v1", routes);
-
 app.use("/health", (req: Request, res: Response) => {
   res.status(200).json({
     health: "Ok",
   });
 });
+
+app.use("/api/v1", routes);
 
 //handle not found
 app.use((req: Request, res: Response, next: NextFunction) => {
