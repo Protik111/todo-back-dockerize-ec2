@@ -26,6 +26,11 @@ const getTodos = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// const editTodo = catchAsync(async (req: Request, res: Response) => {
+//   const id = req.params;
+//   const result = await TodoService.editTodo(id, req.body)
+// })
+
 export const TodoController = {
   createTodo,
   getTodos,

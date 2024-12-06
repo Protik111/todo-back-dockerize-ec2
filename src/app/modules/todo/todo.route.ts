@@ -6,11 +6,13 @@ import { TodoController } from "./todo.controller";
 const router = Router();
 
 router.post(
-  "/create",
+  "/",
   validateRequest(TodoValidation.createTodoZodSchema),
   TodoController.createTodo
 );
 
 router.get("/", TodoController.getTodos);
+
+// router.put("/id");
 
 export const TodoRoutes = router;

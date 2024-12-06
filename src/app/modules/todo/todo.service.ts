@@ -19,7 +19,33 @@ const getTodos = async (): Promise<ITodoResponse[] | null> => {
   return result;
 };
 
+const editTodo = async (
+  id: string,
+  payload: { status: "completed" | "uncompleted" | "paused" }
+): Promise<ITodoResponse | null> => {
+  const { status } = payload;
+
+  const result = await prisma.todo.update({
+    where: { id },
+    data: { status },
+  });
+
+  return result as ITodoResponse;
+};
+
+const deleteTodo = async (id: number): Promise<ITodoResponse> => {
+  const result = await prisma.todo.delete({
+    where: {
+      id,
+    },
+  });
+
+  return result;
+};
+
 export const TodoService = {
   createTodo,
   getTodos,
+  editTodo,
+  deleteTodo,
 };
