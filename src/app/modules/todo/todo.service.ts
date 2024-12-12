@@ -33,10 +33,10 @@ const editTodo = async (
   return result as ITodoResponse;
 };
 
-const deleteTodo = async (id: number): Promise<ITodoResponse> => {
+const deleteTodo = async (id: string): Promise<ITodoResponse> => {
   const result = await prisma.todo.delete({
     where: {
-      id,
+      id
     },
   });
 

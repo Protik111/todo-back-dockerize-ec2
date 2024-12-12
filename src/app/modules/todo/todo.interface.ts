@@ -4,7 +4,7 @@ export type ITodo = {
 };
 
 export type ITodoResponse = {
-  id: number;
+  id?: string;
   title: string;
   time: string;
   status: string;
