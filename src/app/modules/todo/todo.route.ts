@@ -13,6 +13,13 @@ router.post(
 
 router.get("/", TodoController.getTodos);
 
-// router.put("/id");
+router.patch(
+  "/:id",
+  validateRequest(TodoValidation.updateTodoZodSchema),
+
+  TodoController.editTodo
+);
+
+router.delete("/:id", TodoController.deleteTodo);
 
 export const TodoRoutes = router;

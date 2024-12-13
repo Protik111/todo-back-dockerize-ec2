@@ -11,6 +11,15 @@ const createTodoZodSchema = z.object({
   }),
 });
 
+const updateTodoZodSchema = z.object({
+  body: z.object({
+    status: z.string({
+      required_error: "Status is required",
+    }),
+  }),
+});
+
 export const TodoValidation = {
   createTodoZodSchema,
+  updateTodoZodSchema,
 };
