@@ -24,6 +24,7 @@ const editTodo = async (
   payload: { status: "completed" | "uncompleted" | "paused" }
 ): Promise<ITodoResponse | null> => {
   const { status } = payload;
+  console.log("status");
 
   const result = await prisma.todo.update({
     where: { id },
@@ -36,7 +37,7 @@ const editTodo = async (
 const deleteTodo = async (id: string): Promise<ITodoResponse> => {
   const result = await prisma.todo.delete({
     where: {
-      id
+      id,
     },
   });
 
