@@ -9,6 +9,9 @@ done
 
 echo "Database is ready!"
 
+# Run Prisma client generation (safe here)
+npx prisma generate
+
 # Run migrations
 npx prisma migrate deploy
 
