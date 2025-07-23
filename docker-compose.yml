@@ -10,8 +10,8 @@ services:
     depends_on:
       - db
     restart: always # This will ensure the app container restarts if it fails
-    volumes:
-      - .:/usr/src/app
+    #volumes:
+      #- .:/usr/src/app
     command: npm run start
 
   db:
