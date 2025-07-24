@@ -12,7 +12,7 @@ services:
     restart: always # This will ensure the app container restarts if it fails
     #volumes:
       #- .:/usr/src/app
-    command: npm run start
+    #command: npm run start
 
   db:
     image: postgres:latest
