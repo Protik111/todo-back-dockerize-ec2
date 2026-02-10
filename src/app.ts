@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
 import routes from "./app/routes";
+import os from "os";
 
 import cookieParser from "cookie-parser";
 
@@ -18,11 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/health", (req: Request, res: Response) => {
   res.status(200).json({
-    health: "Ok",
+    health: `Ok from${req.ip}`,
   });
 });
 
 app.use("/api/v1", routes);
+
+console.log("test");
 
 //handle not found
 app.use((req: Request, res: Response, next: NextFunction) => {
