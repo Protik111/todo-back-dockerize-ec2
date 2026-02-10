@@ -1,0 +1,26 @@
+name: Deploy Backend to EC2
+
+on:
+  workflow_run:
+    workflows: ['Publish Docker Image']
+    types: [completed]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Stop the old container
+      run: docker stop todo-back-dockerize-ec2 || true
+
+    - name: Delete the old container
+      run: docker rm todo-back-dockerize-ec2 || true
+
+    - name: Delete the old image
+      run: docker rmi ${{secrets.DOCKERHUB_USERNAME}}/todo-back-dockerize-ec2:latest || true
+
+    - name: Pull the image from dockerhub
+      run: docker pull ${{secrets.DOCKERHUB_USERNAME}}/todo-back-dockerize-ec2:latest
+
+    - name: Run the image
+      run: docker compose up -d
