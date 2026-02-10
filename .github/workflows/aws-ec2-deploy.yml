@@ -9,11 +9,17 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Stop and remove all containers
+      - name: Stop and remove containers
         run: docker compose down -v || true
       
-      - name: Remove old image
-        run: docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest || true
+      - name: Remove dangling images and build cache
+        run: |
+          docker image prune -f
+          docker builder prune -f
+      
+      - name: Remove old todo-back images (keep latest)
+        run: |
+          docker images | grep todo-back-dockerize-ec2 | grep -v latest | awk '{print $3}' | xargs -r docker rmi -f || true
       
       - name: Pull latest image
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest
