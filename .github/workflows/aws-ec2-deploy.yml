@@ -9,14 +9,6 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Check .env file exists
-        run: |
-          if [ ! -f .env ]; then
-            echo "Error: .env file not found!"
-            exit 1
-          fi
-          echo ".env file found"
-      
       - name: Stop and remove all containers
         run: docker compose down -v || true
       
