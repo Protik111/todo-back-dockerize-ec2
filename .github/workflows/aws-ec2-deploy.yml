@@ -6,34 +6,21 @@ on:
     types: [completed]
 
 jobs:
-  deploy:
+  build:
     runs-on: self-hosted
+
     steps:
-      - name: Checkout latest code (for docker-compose.yml)
-        uses: actions/checkout@v4
+    - name: Stop the old container
+      run: docker stop todo-back-dockerize-ec2 || true
 
-      - name: Copy docker-compose.yml to app directory
-        run: cp docker-compose.yml /home/ubuntu/app/
+    - name: Delete the old container
+      run: docker rm todo-back-dockerize-ec2 || true
 
-      - name: Navigate to app directory
-        run: cd /home/ubuntu/app
+    - name: Delete the old image
+      run: docker rmi ${{secrets.DOCKERHUB_USERNAME}}/todo-back-dockerize-ec2:latest || true
 
-      - name: Stop and remove old containers
-        run: |
-          cd /home/ubuntu/app
-          docker compose down || true
+    - name: Pull the image from dockerhub
+      run: docker pull ${{secrets.DOCKERHUB_USERNAME}}/todo-back-dockerize-ec2:latest
 
-      - name: Pull latest image
-        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest
-
-      - name: Start containers
-        run: |
-          cd /home/ubuntu/app
-          docker compose up -d
-
-      - name: Wait for app to initialize
-        run: sleep 15
-
-      - name: Verify app is running
-        run: |
-          curl -f http://localhost:5000 || (echo "App not responding!" && exit 1)
+    - name: Run the image
+      run: docker compose up -d
