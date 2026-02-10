@@ -41,7 +41,7 @@ services:
   app:
     image: protik111/todo-back-dockerize-ec2:latest
     container_name: express-app
-    network_mode: "host"
+    # network_mode: "host"
     ports:
       - "5000:5000"
     environment:
