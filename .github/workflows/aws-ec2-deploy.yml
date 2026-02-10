@@ -1,3 +1,45 @@
+# name: Deploy Backend to EC2
+
+# on:
+#   workflow_run:
+#     workflows: ['Publish Docker Image']
+#     types: [completed]
+
+# jobs:
+#   deploy:
+#     runs-on: self-hosted
+#     steps:
+#       - name: Check disk space
+#         run: df -h
+      
+#       - name: Stop and remove containers
+#         run: docker compose down || true
+      
+#       - name: Clean up Docker system
+#         run: |
+#           # Remove dangling images
+#           docker image prune -f
+#           # Remove old todo-back images except the one we're about to pull
+#           docker images | grep todo-back-dockerize-ec2 | awk '{print $3}' | xargs -r docker rmi -f || true
+#           # Clean build cache
+#           docker builder prune -f
+      
+#       - name: Pull latest image
+#         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest
+#         timeout-minutes: 5
+      
+#       - name: Start services
+#         run: docker compose up -d
+      
+#       - name: Wait for services
+#         run: sleep 15
+      
+#       - name: Check container status
+#         run: docker compose ps
+      
+#       - name: Show app logs
+#         run: docker compose logs app --tail=30
+
 name: Deploy Backend to EC2
 
 on:
@@ -6,36 +48,67 @@ on:
     types: [completed]
 
 jobs:
-  deploy:
-    runs-on: self-hosted
+  deploy-server-1:
+    runs-on: [self-hosted, server-1]
     steps:
       - name: Check disk space
         run: df -h
       
-      - name: Stop and remove containers
-        run: docker compose down || true
-      
       - name: Clean up Docker system
         run: |
-          # Remove dangling images
           docker image prune -f
-          # Remove old todo-back images except the one we're about to pull
           docker images | grep todo-back-dockerize-ec2 | awk '{print $3}' | xargs -r docker rmi -f || true
-          # Clean build cache
           docker builder prune -f
       
       - name: Pull latest image
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest
         timeout-minutes: 5
       
-      - name: Start services
-        run: docker compose up -d
+      - name: Stop and restart containers
+        run: |
+          docker compose down || true
+          docker compose up -d
       
       - name: Wait for services
         run: sleep 15
       
-      - name: Check container status
-        run: docker compose ps
+      - name: Health check
+        run: |
+          docker compose ps
+          curl -f http://localhost:5000/health || echo "Warning: Health check failed"
+      
+      - name: Show app logs
+        run: docker compose logs app --tail=30
+
+  deploy-server-2:
+    runs-on: [self-hosted, server-2]
+    needs: deploy-server-1  # Deploy to server-2 only after server-1 is healthy
+    steps:
+      - name: Check disk space
+        run: df -h
+      
+      - name: Clean up Docker system
+        run: |
+          docker image prune -f
+          docker images | grep todo-back-dockerize-ec2 | awk '{print $3}' | xargs -r docker rmi -f || true
+          docker builder prune -f
+      
+      - name: Pull latest image
+        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest
+        timeout-minutes: 5
+      
+      - name: Stop and restart containers
+        run: |
+          docker compose down || true
+          docker compose up -d
+      
+      - name: Wait for services
+        run: sleep 15
+      
+      - name: Health check
+        run: |
+          docker compose ps
+          curl -f http://localhost:5000/health || echo "Warning: Health check failed"
       
       - name: Show app logs
         run: docker compose logs app --tail=30
