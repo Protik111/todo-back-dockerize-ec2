@@ -9,29 +9,33 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
+      - name: Check disk space
+        run: df -h
+      
       - name: Stop and remove containers
-        run: docker compose down -v || true
+        run: docker compose down || true
       
-      - name: Remove dangling images and build cache
+      - name: Clean up Docker system
         run: |
+          # Remove dangling images
           docker image prune -f
+          # Remove old todo-back images except the one we're about to pull
+          docker images | grep todo-back-dockerize-ec2 | awk '{print $3}' | xargs -r docker rmi -f || true
+          # Clean build cache
           docker builder prune -f
-      
-      - name: Remove old todo-back images (keep latest)
-        run: |
-          docker images | grep todo-back-dockerize-ec2 | grep -v latest | awk '{print $3}' | xargs -r docker rmi -f || true
       
       - name: Pull latest image
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest
+        timeout-minutes: 5
       
       - name: Start services
-        run: docker compose up -d --force-recreate
+        run: docker compose up -d
       
-      - name: Wait for services to be healthy
-        run: sleep 10
+      - name: Wait for services
+        run: sleep 15
       
-      - name: Show running containers
-        run: docker ps
+      - name: Check container status
+        run: docker compose ps
       
       - name: Show app logs
-        run: docker compose logs app --tail=50
+        run: docker compose logs app --tail=30
