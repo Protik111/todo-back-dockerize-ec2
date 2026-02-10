@@ -40,16 +40,19 @@ version: "3.8"
 services:
   app:
     image: protik111/todo-back-dockerize-ec2:latest
-    container_name: express-app
-    network_mode: "host"
+    container_name: todo-back-dockerize-ec2
     ports:
       - "5000:5000"
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
     depends_on:
       db:
         condition: service_healthy
     restart: always
+    networks:
+      - app-network
 
   db:
     image: postgres:15
@@ -67,7 +70,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: always
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
 
+networks:
+  app-network:
+    driver: bridge

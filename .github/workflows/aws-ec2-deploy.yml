@@ -6,21 +6,22 @@ on:
     types: [completed]
 
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
-
     steps:
-    - name: Stop the old container
-      run: docker stop todo-back-dockerize-ec2 || true
-
-    - name: Delete the old container
-      run: docker rm todo-back-dockerize-ec2 || true
-
-    - name: Delete the old image
-      run: docker rmi ${{secrets.DOCKERHUB_USERNAME}}/todo-back-dockerize-ec2:latest || true
-
-    - name: Pull the image from dockerhub
-      run: docker pull ${{secrets.DOCKERHUB_USERNAME}}/todo-back-dockerize-ec2:latest
-
-    - name: Run the image
-      run: docker compose up -d
+      - name: Cleanup old containers
+        run: |
+          docker compose down || true
+          docker system prune -f
+      
+      - name: Pull latest image
+        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/todo-back-dockerize-ec2:latest
+      
+      - name: Start services
+        run: docker compose up -d
+      
+      - name: Show running containers
+        run: docker ps
+      
+      - name: Show logs
+        run: docker compose logs --tail=50
