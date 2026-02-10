@@ -24,8 +24,6 @@ app.use("/health", (req: Request, res: Response) => {
 
 app.use("/api/v1", routes);
 
-console.log("test");
-
 //handle not found
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(400).json({
